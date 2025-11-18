@@ -587,7 +587,7 @@ import { HomeIcon, BuildingOfficeIcon } from '@heroicons/vue/24/outline'
 import { useProperties } from '~/composables/useProperties'
 import { useNotifications } from '~/composables/useNotifications'
 
-const NumberStepper = defineAsyncComponent(() => import('@/components/NumberStepper.vue'))
+const NumberStepper = defineAsyncComponent(() => import('@/components/ui/NumberStepper.vue'))
 
 definePageMeta({
   layout: 'default',

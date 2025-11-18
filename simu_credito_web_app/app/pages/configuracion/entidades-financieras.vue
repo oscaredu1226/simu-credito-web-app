@@ -93,8 +93,8 @@ import { ref, onMounted } from 'vue'
 import { useConfiguration } from '~/composables/useConfiguration'
 import { useNotifications } from '~/composables/useNotifications'
 // Importamos los componentes de modales
-import FinancialEntityModal from '~/components/FinancialEntityModal.vue'
-import DeleteConfirmationModal from '~/components/DeleteConfirmationModal.vue'
+import FinancialEntityModal from '~/components/modals/FinancialEntityModal.vue'
+import DeleteConfirmationModal from '~/components/modals/DeleteConfirmationModal.vue'
 
 const {
   listFinancialEntities,

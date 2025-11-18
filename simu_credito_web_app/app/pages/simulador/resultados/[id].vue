@@ -122,7 +122,7 @@ import { useRoute } from 'vue-router'
 import { useSimulations } from '~/composables/useSimulations'
 
 // Components
-import AmortizationTable from '~/components/AmortizationTable.vue'
+import AmortizationTable from '~/components/tables/AmortizationTable.vue'
 
 const route = useRoute()
 // --- CAMBIO: Obtener ambas funciones ---

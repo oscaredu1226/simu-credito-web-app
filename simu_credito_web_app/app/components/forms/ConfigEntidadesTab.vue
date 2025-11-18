@@ -118,8 +118,8 @@ import { useConfiguration } from '~/composables/useConfiguration'
 import { useNotifications } from '~/composables/useNotifications'
 
 // Importar Modales de forma asíncrona
-const FinancialEntityModal = defineAsyncComponent(() => import('@/components/FinancialEntityModal.vue'))
-const DeleteConfirmationModal = defineAsyncComponent(() => import('@/components/DeleteConfirmationModal.vue'))
+const FinancialEntityModal = defineAsyncComponent(() => import('@/components/modals/FinancialEntityModal.vue'))
+const DeleteConfirmationModal = defineAsyncComponent(() => import('@/components/modals/DeleteConfirmationModal.vue'))
 
 const {
   listFinancialEntities,

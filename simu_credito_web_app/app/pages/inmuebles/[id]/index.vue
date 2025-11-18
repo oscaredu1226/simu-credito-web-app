@@ -120,7 +120,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { useProperties } from '~/composables/useProperties'
 import { useNotifications } from '~/composables/useNotifications'
 // Asegúrate que la ruta al componente sea correcta
-import DeleteConfirmationModal from '~/components/DeleteConfirmationModal.vue'
+import DeleteConfirmationModal from '~/components/modals/DeleteConfirmationModal.vue'
 
 definePageMeta({
   layout: 'default',

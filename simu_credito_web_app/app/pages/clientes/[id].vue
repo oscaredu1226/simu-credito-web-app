@@ -365,7 +365,7 @@
 import { ref, onMounted, computed, reactive } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useClients } from '~/composables/useClients'
-import DeleteConfirmationModal from '~/components/DeleteConfirmationModal.vue'
+import DeleteConfirmationModal from '~/components/modals/DeleteConfirmationModal.vue'
 import { RadioGroup, RadioGroupOption } from '@headlessui/vue'
 
 definePageMeta({

@@ -34,7 +34,7 @@ definePageMeta({
 })
 
 // Components
-import PropertyGrid from '~/components/PropertyGrid.vue'
+import PropertyGrid from '~/components/ui/PropertyGrid.vue'
 
 const { listProperties } = useProperties()
 

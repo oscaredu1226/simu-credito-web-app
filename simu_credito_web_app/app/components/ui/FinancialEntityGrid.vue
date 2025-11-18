@@ -44,7 +44,7 @@
 
 <script setup>
 import { ref, computed } from 'vue'
-import FinancialEntityCard from '~/components/FinancialEntityCard.vue'
+import FinancialEntityCard from '~/components/ui/FinancialEntityCard.vue'
 
 const props = defineProps({
   entities: {

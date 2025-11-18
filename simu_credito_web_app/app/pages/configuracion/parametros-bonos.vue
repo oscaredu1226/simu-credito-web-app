@@ -109,8 +109,8 @@
 import { ref, onMounted, computed } from 'vue'
 import { useConfiguration } from '~/composables/useConfiguration'
 import { useNotifications } from '~/composables/useNotifications'
-import BonusBbpModal from '~/components/BonusBdpModal.vue'
-import BonusTechoPropioModal from "~/components/BonusTechoPropioModal.vue";
+import BonusBbpModal from '~/components/modals/BonusBdpModal.vue'
+import BonusTechoPropioModal from "~/components/modals/BonusTechoPropioModal.vue";
 
 // --- Inyección de Composables ---
 const { listBonusParameters, updateBonusParameter, getTechoPropioParameters, updateGlobalValue } = useConfiguration()

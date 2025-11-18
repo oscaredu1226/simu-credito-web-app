@@ -251,7 +251,7 @@ import { useProperties } from '~/composables/useProperties'
 import { useNotifications } from '~/composables/useNotifications'
 
 // Asegúrate que la ruta sea correcta o que el componente esté registrado globalmente
-const NumberStepper = defineAsyncComponent(() => import('@/components/NumberStepper.vue'))
+const NumberStepper = defineAsyncComponent(() => import('@/components/ui/NumberStepper.vue'))
 
 definePageMeta({
   layout: 'default',
