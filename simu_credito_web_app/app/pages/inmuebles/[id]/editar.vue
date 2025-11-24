@@ -121,14 +121,11 @@
                   <h3 class="text-lg font-semibold text-gray-900">Valorización (Precios)</h3>
                 </div>
                 <div class="bg-gradient-to-r from-indigo-50 to-blue-50 rounded-xl p-6 border border-indigo-100">
-                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                     <div><NumberStepper label="Precio de Vivienda (S/) *" v-model="formData.propertyPrice" :step="1000" :min="0" unit="S/" :input-class="'font-semibold text-xl text-indigo-600 focus:ring-indigo-500 focus:border-indigo-500'"/><p v-if="errors.propertyPrice" class="error-message">{{ errors.propertyPrice }}</p></div>
-                    <div><NumberStepper label="Valor de Cochera (S/)" v-model="formData.garageValue" :step="500" :min="0" unit="S/" :optional="true" :input-class="'font-semibold text-lg focus:ring-indigo-500 focus:border-indigo-500'"/><p v-if="errors.garageValue" class="error-message">{{ errors.garageValue }}</p></div>
-                  </div>
                   <div class="mt-4 p-4 bg-white rounded-lg border border-indigo-200">
                     <div class="flex items-center space-x-2 text-sm text-indigo-700">
                       <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg>
-                      <span>Usados para calcular opciones de financiamiento.</span>
+                      <span>Este precio será utilizado para calcular las opciones de financiamiento disponibles.</span>
                     </div>
                   </div>
                 </div>
@@ -277,7 +274,7 @@ const steps = [
 const formData = reactive({
   nombreProyecto: '', descripcion: '', propertyTypeId: null, estadoInmueble: null,
   builtArea: 0, landArea: 0, bedrooms: 0, bathrooms: 0, garages: 0,
-  propertyPrice: 0, garageValue: null, isSustainable: false, photos: []
+  propertyPrice: 0, isSustainable: false, photos: []
 })
 const location = reactive({ departamento: '', provincia: '', distrito: '', numero: '', direccion: '' })
 const errors = reactive({})
@@ -317,7 +314,6 @@ onMounted(async () => {
       bathrooms: data.bathrooms || 0,
       garages: data.garages || 0,
       propertyPrice: data.propertyPrice || 0,
-      garageValue: data.garageValue || null,
       isSustainable: data.isSustainable || false,
     });
 
@@ -374,7 +370,6 @@ const validateStep = (step) => {
     if (formData.bathrooms < 0) { errors.bathrooms = 'N° >= 0'; isValid = false }
   } else if (step === 1) {
     if (formData.propertyPrice <= 0) { errors.propertyPrice = 'Precio > 0'; isValid = false }
-    if (formData.garageValue !== null && formData.garageValue < 0) { errors.garageValue = 'Valor >= 0'; isValid = false }
     if (formData.isSustainable === null || formData.isSustainable === undefined) { errors.isSustainable = 'Seleccione una opción'; isValid = false }
   }
   return isValid
@@ -448,8 +443,7 @@ const handleUpdateProperty = async () => {
   const payload = {
     ...formData,
     photos: finalPhotoUrls,
-    ubicacionGeografica: ubicacionGeografica,
-    garageValue: formData.garageValue === 0 ? null : formData.garageValue
+    ubicacionGeografica: ubicacionGeografica
   }
   payload.propertyTypeId = Number(payload.propertyTypeId) || null;
   payload.builtArea = Number(payload.builtArea) || 0;
@@ -458,7 +452,6 @@ const handleUpdateProperty = async () => {
   payload.bathrooms = Number(payload.bathrooms) || 0;
   payload.garages = Number(payload.garages) || 0;
   payload.propertyPrice = Number(payload.propertyPrice) || 0;
-  payload.garageValue = payload.garageValue ? Number(payload.garageValue) : null;
   try {
     await updateProperty(route.params.id, payload)
     showSuccess('Propiedad actualizada exitosamente.')

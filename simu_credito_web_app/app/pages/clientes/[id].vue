@@ -150,6 +150,40 @@
                   <input v-model="editableClient.spouse.documentNumber" type="text" class="input-field" />
                 </dd>
               </div>
+
+              <div class="dl-row">
+                <dt class="dl-dt">Fecha de Nacimiento</dt>
+                <dd v-if="!isEditing" class="dl-dd">{{ formatDateForDisplay(client.spouse.birthDate) }}</dd>
+                <dd v-else class="dl-dd-edit">
+                  <input v-model="editableClient.spouse.birthDate" type="date" class="input-field" />
+                </dd>
+              </div>
+
+              <div class="dl-row">
+                <dt class="dl-dt">Grado de Instrucción</dt>
+                <dd v-if="!isEditing" class="dl-dd">{{ getEducationLevelText(client.spouse.educationLevelId) }}</dd>
+                <dd v-else class="dl-dd-edit">
+                  <select v-model.number="editableClient.spouse.educationLevelId" class="input-field">
+                    <option v-for="level in educationLevels" :key="level.id" :value="level.id">{{ level.name }}</option>
+                  </select>
+                </dd>
+              </div>
+
+              <div class="dl-row">
+                <dt class="dl-dt">Email</dt>
+                <dd v-if="!isEditing" class="dl-dd">{{ client.spouse.correo || 'N/A' }}</dd>
+                <dd v-else class="dl-dd-edit">
+                  <input v-model="editableClient.spouse.correo" type="email" class="input-field" />
+                </dd>
+              </div>
+
+              <div class="dl-row">
+                <dt class="dl-dt">Teléfono</dt>
+                <dd v-if="!isEditing" class="dl-dd">{{ client.spouse.telefono || 'N/A' }}</dd>
+                <dd v-else class="dl-dd-edit">
+                  <input v-model="editableClient.spouse.telefono" type="tel" class="input-field" />
+                </dd>
+              </div>
             </dl>
           </div>
         </div>

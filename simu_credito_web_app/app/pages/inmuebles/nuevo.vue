@@ -309,7 +309,6 @@
                     </div>
 
                     <div class="bg-gradient-to-r from-indigo-50 to-blue-50 rounded-xl p-6 border border-indigo-100">
-                      <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                         <div class="space-y-2">
                           <NumberStepper
                               label="Precio de Vivienda (S/) *"
@@ -320,36 +319,15 @@
                               :input-class="'font-semibold text-xl text-indigo-600 transition-all duration-200 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500'"
                           />
                           <p v-if="errors.propertyPrice" class="error-message">
-                            <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                              <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
-                            </svg>
                             {{ errors.propertyPrice }}
                           </p>
-                        </div>
-                        <div class="space-y-2">
-                          <NumberStepper
-                              label="Valor de Cochera (S/)"
-                              v-model="formData.garageValue"
-                              :step="500"
-                              :min="0"
-                              unit="S/"
-                              :optional="true"
-                              :input-class="'font-semibold text-lg transition-all duration-200 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500'"
-                          />
-                          <p v-if="errors.garageValue" class="error-message">
-                            <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                              <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
-                            </svg>
-                            {{ errors.garageValue }}
-                          </p>
-                        </div>
                       </div>
                       <div class="mt-4 p-4 bg-white rounded-lg border border-indigo-200">
                         <div class="flex items-center space-x-2 text-sm text-indigo-700">
                           <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                             <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
                           </svg>
-                          <span>Estos precios serán utilizados para calcular las opciones de financiamiento disponibles.</span>
+                          <span>Este precio será utilizado para calcular las opciones de financiamiento disponibles.</span>
                         </div>
                       </div>
                     </div>
@@ -626,7 +604,6 @@ const getDefaultFormData = () => ({
   bathrooms: 0,
   garages: 0,
   propertyPrice: 0,
-  garageValue: null,
   isSustainable: false,
   photos: []
 })
@@ -697,10 +674,6 @@ const validateStep = (step) => {
   } else if (step === 1) {
     if (formData.propertyPrice <= 0) {
       errors.propertyPrice = 'El precio de la vivienda debe ser mayor a 0'
-      isValid = false
-    }
-    if (formData.garageValue !== null && formData.garageValue < 0) {
-      errors.garageValue = 'El valor de cochera no puede ser negativo'
       isValid = false
     }
     if (formData.isSustainable === null || formData.isSustainable === undefined) {
@@ -802,7 +775,6 @@ const handleSaveProperty = async () => {
     bathrooms: Number(formData.bathrooms) || 0,
     garages: Number(formData.garages) || 0,
     propertyPrice: Number(formData.propertyPrice) || 0,
-    garageValue: formData.garageValue ? Number(formData.garageValue) : null
   }
 
   try {
