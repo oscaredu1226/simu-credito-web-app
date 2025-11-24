@@ -2,15 +2,27 @@
   <div class="min-h-screen bg-gray-50">
     <div class="bg-white border-b border-gray-200 px-6 py-4">
       <div class="flex justify-between items-center">
-        <button
-            @click="goBackToSimulator"
-            class="bg-white border border-gray-300 text-gray-900 px-4 py-2 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 flex items-center"
-        >
-          <svg class="mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-          </svg>
-          Volver al Simulador
-        </button>
+        <div class="flex gap-3">
+          <button
+              @click="goBackToSimulator"
+              class="bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 flex items-center"
+          >
+            <svg class="mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            Nueva Simulación
+          </button>
+
+          <button
+              @click="handleEditParams"
+              class="bg-indigo-50 border border-indigo-200 text-indigo-700 px-4 py-2 rounded-lg hover:bg-indigo-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 flex items-center font-medium"
+          >
+            <svg class="mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+            </svg>
+            Editar Parámetros
+          </button>
+        </div>
 
         <button
             @click="exportToPDF"
@@ -126,7 +138,10 @@ import AmortizationTable from '~/components/tables/AmortizationTable.vue'
 
 const route = useRoute()
 // --- CAMBIO: Obtener ambas funciones ---
-const { getAmortizationSchedule, getSimulationById, exportSimulationToPDF } = useSimulations()
+const { getAmortizationSchedule, getSimulationById, exportSimulationToPDF, setSimulationDraft } = useSimulations()
+const { createSimulation, getSimulationDraft } = useSimulations()
+const { getClient } = useClients()
+const { getProperty } = useProperties()
 
 // State
 const simulationId = ref('')
@@ -141,9 +156,20 @@ const simulationData = ref(null) // <-- AÑADIDO: Estado para datos completos
 
 // Methods
 const goBackToSimulator = () => {
+  // Limpia el draft por si acaso para empezar de cero
+  setSimulationDraft(null)
   navigateTo('/simulador')
 }
 
+const handleEditParams = () => {
+  if (!simulationData.value) return
+
+  // Guardamos los datos actuales en el estado compartido
+  setSimulationDraft(simulationData.value)
+
+  // Redirigimos al wizard
+  navigateTo('/simulador')
+}
 // --- CAMBIO: Lógica de exportación ---
 const exportToPDF = async () => {
   if (isExporting.value || !simulationData.value) return
@@ -169,6 +195,32 @@ const handlePageChange = async (page) => {
   }
 }
 
+const loadDraftData = async () => {
+  const draft = getSimulationDraft()
+  if (!draft) return
+
+  try {
+    if (draft.clientInfo?.id) {
+      selectedClient.value = await getClient(draft.clientInfo.id)
+    }
+    if (draft.propertyInfo?.id) {
+      const prop = await getProperty(draft.propertyInfo.id)
+      selectedProperty.value = prop
+      localStorage.setItem('selectedProperty', JSON.stringify(prop))
+    }
+
+    if (draft.summary) {
+      initialPayment.value = draft.summary.initialPayment
+    }
+    currentStep.value = 4
+    if(draft.keyIndicators) {
+    }
+
+  } catch (e) {
+    console.error("Error restaurando borrador", e)
+  }
+}
+
 onMounted(async () => {
   try {
     loading.value = true
@@ -177,20 +229,15 @@ onMounted(async () => {
     if (!simulationId.value) {
       throw new Error("No se encontró ID de simulación")
     }
-
-    // 1. Cargar todos los datos de la simulación
     const data = await getSimulationById(simulationId.value)
 
-    // 2. Asignar los datos reales (reemplazando los mocks)
     clientInfo.value = data.clientInfo
     propertyInfo.value = data.propertyInfo
     summary.value = data.summary
     keyIndicators.value = data.keyIndicators
 
-    // 3. Asignar la tabla de amortización (AHORA ESTÁ COMPLETA)
     amortizationSchedule.value = data.amortizationSchedule
 
-    // 4. Guardar los datos completos para el PDF
     simulationData.value = data
 
   } catch (error) {

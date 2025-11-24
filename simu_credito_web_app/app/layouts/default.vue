@@ -48,6 +48,16 @@
           Simulador
         </NuxtLink>
         <NuxtLink
+            to="/simulador/historial"
+            class="flex items-center px-4 py-3 text-gray-300 hover:bg-gray-700 hover:text-white transition-colors duration-200"
+            :class="{ 'bg-gray-700 text-white border-r-4 border-indigo-400': $route.path === '/simulador/historial' }"
+        >
+          <svg class="w-5 h-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          Historial
+        </NuxtLink>
+        <NuxtLink
           to="/configuracion"
           class="flex items-center px-4 py-3 text-gray-300 hover:bg-gray-700 hover:text-white transition-colors duration-200"
           :class="{ 'bg-gray-700 text-white border-r-4 border-indigo-400': $route.path.startsWith('/configuracion') }"

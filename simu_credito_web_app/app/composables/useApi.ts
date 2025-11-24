@@ -1,5 +1,3 @@
-// app/composables/useApi.ts
-
 export const useApi = () => {
     const config = useRuntimeConfig()
     const token = useCookie('auth_token')
