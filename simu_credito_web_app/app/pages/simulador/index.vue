@@ -122,6 +122,7 @@
                   :currency="creditCurrency"
                   :client-info="clientSummary"
                   :property-info="propertySummary"
+                  program-type="mivivienda"
               />
             </div>
 
@@ -129,7 +130,10 @@
               <StateContributionCard
                   title="Bono Familiar Habitacional (BFH)"
                   :amount="stateContribution"
+                  :client-info-techo-propio="clientSummary"
                   :currency="creditCurrency"
+                  :currency-amount="exchangeRateNumeric"
+                  program-type="techo_propio"
               />
             </div>
 
@@ -441,8 +445,16 @@ const stateContribution = computed(() => {
 
   } else {
     // Techo Propio
-    const bfh = globalValues.value.find(v => v.valueKey === 'BFH_AVN_AMOUNT');
-    bonusInSoles = bfh?.numericValue || 46545;
+    const client = selectedClient.value;
+
+    // Verificamos si el cliente NO es elegible
+    if (client && client.techoPropioStatus === 'NOT_ELIGIBLE') {
+      bonusInSoles = 0;
+    } else {
+      // Si es ELIGIBLE (o estado desconocido), asignamos el valor del bono
+      const bfh = globalValues.value.find(v => v.valueKey === 'BFH_AVN_AMOUNT');
+      bonusInSoles = bfh?.numericValue || 46545;
+    }
   }
 
   // Retornar convertido a la moneda elegida
@@ -462,7 +474,7 @@ const financingFormula = computed(() => {
   return `${sym} ${f(propertyPriceInCurrency.value)} (Precio) - ${sym} ${f(stateContribution.value)} (${prog}) - ${sym} ${f(initialPayment.value)} (Inicial) + ${sym} ${f(totalInitialCosts.value)} (Gastos)`;
 })
 
-const clientSummary = computed(() => selectedClient.value ? { name: `${selectedClient.value.holder.nombres} ${selectedClient.value.holder.apellidos}`, appliesForIntegratorBonus: selectedClient.value.appliesForIntegratorBonus, conadisCardNumber: selectedClient.value.conadisCardNumber } : null)
+const clientSummary = computed(() => selectedClient.value ? { name: `${selectedClient.value.holder.nombres} ${selectedClient.value.holder.apellidos}`, appliesForIntegratorBonus: selectedClient.value.appliesForIntegratorBonus, conadisCardNumber: selectedClient.value.conadisCardNumber, currentHousingSituation : selectedClient.value.isOwnerOfAnotherProperty, monthlyNetIncome : selectedClient.value.familyNetIncome } : null)
 const propertySummary = computed(() => {
   if (!selectedProperty.value) return null;
   // Buscar en qué rango cae el precio (en soles)

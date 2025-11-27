@@ -12,6 +12,11 @@
             <p><strong>Aplica Integración:</strong> {{ clientInfo.appliesForIntegratorBonus ? 'Sí' : 'No' }}</p>
             <p v-if="clientInfo.conadisCardNumber"><strong>CONADIS:</strong> {{ clientInfo.conadisCardNumber }}</p>
           </div>
+          <div v-if="clientInfoTechoPropio" class="text-xs text-indigo-800 space-y-1">
+            <p><strong>Cliente:</strong> {{ clientInfoTechoPropio.name }}</p>
+            <p><strong>Vivienda actual:</strong> {{ clientInfoTechoPropio.currentHousingSituation ? 'Propia' : 'No propia' }}</p>
+            <p><strong>Ingreso neto mensual:</strong> S/ {{ clientInfoTechoPropio.monthlyNetIncome.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) }}</p>
+          </div>
           <div v-if="propertyInfo" class="text-xs text-indigo-800 space-y-1">
             <p><strong>Inmueble Sostenible:</strong> {{ propertyInfo.isSustainable ? 'Sí' : 'No' }}</p>
             <p><strong>Rango calculado:</strong> {{ propertyInfo.range }}</p>
@@ -19,6 +24,16 @@
         </div>
 
         <p class="text-sm text-indigo-600 italic leading-relaxed border-t border-indigo-200 pt-2" v-html="explanationText"></p>
+
+        <div v-if="programType === 'techo_propio' && currency === 'PEN' " class="mt-2 text-xs text-indigo-500">
+          <p>El Bono Familiar Habitacional (BFH) se asigna según los criterios establecidos por el programa Techo Propio, considerando la situación habitacional del cliente  (no debe tener vivienda) y su ingreso neto mensual (no superior a S/. 3,715.00)</p>
+        </div>
+        <div v-if="programType === 'techo_propio' && currency === 'USD' " class="mt-2 text-xs text-indigo-500">
+          <p>El Bono Familiar Habitacional (BFH) se asigna según los criterios establecidos por el programa Techo Propio, considerando la situación habitacional del cliente  (no debe tener vivienda) y su ingreso neto mensual (no superior a USD {{(3715/currencyAmount).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}})</p>
+        </div>
+
+        <!--info acerca de como se identifica si es acreedor a BFH-->
+
       </div>
 
       <div class="text-right whitespace-nowrap">
@@ -48,6 +63,10 @@ const props = defineProps({
     type: Object,
     default: null
   },
+  clientInfoTechoPropio: {
+    type: Object,
+    default: null
+  },
   propertyInfo: {
     type: Object,
     default: null
@@ -55,6 +74,16 @@ const props = defineProps({
   currency: {
     type: String,
     default: 'PEN'
+  },
+
+  currencyAmount: {
+    type: Number,
+    default: null
+  },
+  // Agregamos esta prop para distinguir el programa (mivivienda vs techo_propio)
+  programType: {
+    type: String,
+    default: 'mivivienda' // valor por defecto
   }
 })
 
@@ -64,21 +93,25 @@ const formattedAmount = computed(() => {
   return props.amount?.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})
 })
 
-// Lógica para formular el texto explicativo
+// Lógica para formular el texto explicativo actualizada
 const explanationText = computed(() => {
   if (!props.amount || props.amount === 0) return 'No se ha asignado un bono para esta operación.'
 
-  // Extraer flags de los objetos de información
+  // Lógica para Techo Propio (BFH)
+  if (props.programType === 'techo_propio') {
+    return 'Se ha asignado el <strong>Bono Familiar Habitacional (BFH)</strong> correspondiente a la modalidad de Adquisición de Vivienda Nueva (AVN).'
+  }
+
+  // Lógica existente para Mivivienda (Bono del Buen Pagador - BBP)
   const isSustainable = props.propertyInfo?.isSustainable || false
   const isIntegrator = props.clientInfo?.appliesForIntegratorBonus || false
 
-  // Determinar el tipo de bono y la razón
   let type = 'Tradicional'
   let reason = 'al valor de la vivienda'
 
   if (isSustainable && isIntegrator) {
     type = 'Integrador Sostenible'
-    reason = 'a que el cliente califica como integrador (regsitrado en Conadis) y el inmueble es sostenible'
+    reason = 'a que el cliente califica como integrador (registrado en Conadis) y el inmueble es sostenible'
   } else if (isIntegrator) {
     type = 'Integrador'
     reason = 'a la condición de integrador del cliente (registrado en Conadis)'

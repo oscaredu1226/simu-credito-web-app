@@ -58,6 +58,29 @@ export const useSimulations = () => {
         }
     }
 
+    const formatInterestRatePeiod = (period : any) => {
+        switch (period) {
+            case 'daily':
+                return 'Diario'
+            case 'weekly':
+                return 'Semanal'
+            case 'biweekly':
+                return 'Quincenal'
+            case 'monthly':
+                return 'Mensual'
+            case 'bimonthly':
+                return 'Bimestral'
+            case 'quarterly':
+                return 'Trimestral'
+            case 'semiannual':
+                return 'Semestral'
+            case 'annual':
+                return 'Anual'
+            default:
+                return ''
+        }
+    }
+
     const exportSimulationToPDF = async (simulationData: any) => {
         try {
             // 1. Usar LANDSCAPE ('l') para tener más ancho para la tabla grande
@@ -165,15 +188,14 @@ export const useSimulations = () => {
                 body: [
                     [
                         'Plazo', `${inputs.termYears} años (${inputs.termYears * 12} meses)`,
-                        'Tasa Interés', `${inputs.interestRate}% ${inputs.interestRateType}`
-                    ],
+                        'Tasa Interés', `${inputs.interestRate}% ${inputs.interestRateType} ${formatInterestRatePeiod(inputs.interestRatePeriod)} ${inputs.interestRateType === 'TN' ? ` (cap: ${formatInterestRatePeiod(inputs.interestRateCapitalization)})` : ''}`                    ],
                     [
                         'Periodo Gracia', `${inputs.gracePeriodDurationMonths} meses (${inputs.gracePeriodType})`,
-                        'COK', `${inputs.opportunityCostRate}% ${inputs.opportunityCostType}`
+                        'COK', `${inputs.opportunityCostRate}% ${inputs.opportunityCostType} ${formatInterestRatePeiod(inputs.opportunityCostPeriod)} ${inputs.opportunityCostType === 'TN' ? ` (cap: ${formatInterestRatePeiod(inputs.opportunityCostCapitalization)})` : ''}`
                     ],
                     [
-                        'Seg. Desgravamen', inputs.desgravamenEnabled ? `Sí (${inputs.desgravamenRate}%)` : 'No',
-                        'Seg. Inmueble', inputs.propertyInsuranceEnabled ? `Sí (${inputs.propertyInsuranceRate}%)` : 'No'
+                        'Seg. Desgravamen', inputs.desgravamenEnabled ? `Sí (${inputs.desgravamenRate * 100}%)` : 'No',
+                        'Seg. Inmueble', inputs.propertyInsuranceEnabled ? `Sí (${inputs.propertyInsuranceRate * 100}%)` : 'No'
                     ],
                     [
                         'Comisión Fija', fmtMoney(inputs.monthlyCommissions),
