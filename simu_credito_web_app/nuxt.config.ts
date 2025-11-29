@@ -4,7 +4,7 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   runtimeConfig: {
     public: {
-      apiBase: 'http://localhost:8080/api'
+      apiBase: 'https://simu-credito-platform-6n2e.onrender.com/api'
     }
   },
   css: ['~/assets/css/main.css'],
